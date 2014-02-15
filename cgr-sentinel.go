@@ -10,6 +10,7 @@ import (
 
 	"github.com/cgrates/cgrates/engine"
 	"github.com/codegangsta/martini"
+	"github.com/codegangsta/martini-contrib/render"
 	"github.com/gorilla/websocket"
 )
 
@@ -23,7 +24,7 @@ var (
 	tpl      *template.Template
 )
 
-func userBalanceHandler(w http.ResponseWriter, params martini.Params) {
+func userBalanceHandler(w http.ResponseWriter, params martini.Params, r render.Render) {
 	args := struct {
 		Tenant    string
 		Account   string
@@ -34,7 +35,7 @@ func userBalanceHandler(w http.ResponseWriter, params martini.Params) {
 	if err != nil {
 		http.Error(w, "Error getting user balance: ", http.StatusNotFound)
 	}
-	/*tpl.Execute(w, ub)*/
+	r.HTML(200, "user", ub)
 }
 
 func monitorHandler(w http.ResponseWriter, r *http.Request) {
@@ -66,11 +67,14 @@ func main() {
 	}
 	m := martini.Classic()
 	m.Use(martini.Static("static"))
+	m.Use(render.Renderer(render.Options{
+		Extensions: []string{".html"},
+	}))
 
 	m.Get("/user/:tenant/:account", userBalanceHandler)
 	m.Get("/monitor", monitorHandler)
 	m.Get("/trigger", triggerHandler)
 
 	m.Run()
-	fmt.Print("Listening...")
+	log.Print("Listening at 0.0.0.0:3000...")
 }
