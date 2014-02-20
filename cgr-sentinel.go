@@ -10,8 +10,8 @@ import (
 
 	"github.com/cgrates/cgrates/engine"
 	"github.com/codegangsta/martini"
-	"github.com/codegangsta/martini-contrib/render"
 	"github.com/gorilla/websocket"
+	"github.com/martini-contrib/render"
 )
 
 type Sentinel struct {
@@ -66,7 +66,6 @@ func main() {
 		panic(err)
 	}
 	m := martini.Classic()
-	m.Use(martini.Static("static"))
 	m.Use(render.Renderer(render.Options{
 		Extensions: []string{".html"},
 	}))
