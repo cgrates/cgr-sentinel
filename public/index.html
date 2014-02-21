@@ -1,0 +1,27 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CGRSentinel</title>
+    <link rel="stylesheet" href="css/animate.min.css">
+    <link rel="stylesheet" href="css/app.css" />
+  </head>
+  <body>
+    <div class="row">
+      <div class="large-12 columns">
+        <div class="container">
+          <h1 id="title">cgr-sentinel</h1>
+        </div>
+      </div>
+    </div>
+  </body>
+    <script src="bower_components/jquery/dist/jquery.min.js"></script>
+    <script>
+    $(function(){
+       attention_seekers = ["bounce", "flash", "pulse", "rubberBand", "shake", "swing", "tada", "wobble"];
+       theOne = attention_seekers[Math.floor((Math.random()*attention_seekers.length))];
+       $("#title").addClass("animated " + theOne);
+    });
+  </script>
+</html>
