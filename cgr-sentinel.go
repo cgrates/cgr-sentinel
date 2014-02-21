@@ -30,7 +30,7 @@ func userBalanceHandler(w http.ResponseWriter, params martini.Params, r render.R
 		Account   string
 		Direction string
 	}{params["tenant"], params["account"], "*out"}
-	ub := engine.UserBalance{}
+	ub := engine.Account{}
 	err := client.Call("ApierV1.GetUserBalance", args, &ub)
 	if err != nil {
 		http.Error(w, "Error getting user balance: ", http.StatusNotFound)
