@@ -1,12 +1,14 @@
 package main
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
+	"html/template"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"net/rpc"
-	"text/template"
 
 	"github.com/cgrates/cgrates/engine"
 	"github.com/codegangsta/martini"
@@ -22,6 +24,7 @@ var (
 	client   *rpc.Client
 	sentinel = &Sentinel{}
 	tpl      *template.Template
+	t        = template.Must(template.New("account").ParseFiles("templates/account.tmpl"))
 )
 
 func userBalanceHandler(w http.ResponseWriter, params martini.Params, r render.Render) {
@@ -31,11 +34,13 @@ func userBalanceHandler(w http.ResponseWriter, params martini.Params, r render.R
 		Direction string
 	}{params["tenant"], params["account"], "*out"}
 	ub := engine.Account{}
-	err := client.Call("ApierV1.GetUserBalance", args, &ub)
+	err := client.Call("ApierV1.GetAccount", args, &ub)
 	if err != nil {
-		http.Error(w, "Error getting user balance: ", http.StatusNotFound)
+		http.Error(w, "Error getting user balance: "+err.Error(), http.StatusNotFound)
 	}
-	r.HTML(200, "user", ub)
+	var accBlock bytes.Buffer
+	t.Execute(&accBlock, ub)
+	r.HTML(200, "user", template.HTML(accBlock.String()))
 }
 
 func monitorHandler(w http.ResponseWriter, r *http.Request) {
@@ -47,6 +52,7 @@ func monitorHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 		return
 	}
+	log.Println("Connected websocket!")
 	sentinel.ws = ws
 }
 
@@ -55,7 +61,12 @@ func triggerHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Fprintf(w, "%s", err)
 	}
-	err = sentinel.ws.WriteMessage(websocket.TextMessage, hah)
+	acc := &engine.Account{}
+	err = json.Unmarshal(hah, acc)
+	log.Print(err)
+	var accBlock bytes.Buffer
+	t.Execute(&accBlock, acc)
+	err = sentinel.ws.WriteMessage(websocket.TextMessage, accBlock.Bytes())
 	log.Print(err)
 }
 
@@ -72,7 +83,7 @@ func main() {
 
 	m.Get("/user/:tenant/:account", userBalanceHandler)
 	m.Get("/monitor", monitorHandler)
-	m.Get("/trigger", triggerHandler)
+	m.Post("/trigger", triggerHandler)
 
 	m.Run()
 	log.Print("Listening at 0.0.0.0:3000...")

@@ -4,11 +4,8 @@ $(document).foundation();
 
 
 $(function() {
-    var ws = new WebSocket("ws://localhost:8080/monitor");
+    var ws = new WebSocket("ws://localhost:3000/monitor");
     ws.onmessage = function(event) {
-        var obj = $.parseJSON(event.data);
-        console.log("Received obj: ", obj);
-        $("#data").text(obj.Name + " " + obj.Age);
-        $("#data").addClass(obj.Status);
+        $("#data").html(event.data);
     };
 });

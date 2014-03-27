@@ -1,1 +1,1 @@
-body{font:40px/200px Ubuntu,sans-serif}.container{height:200px;width:400px;background:#eee;margin:150px auto}h1{font:60px/200px Ubuntu,sans-serif;text-align:center}
+.container{font:40px/200px Ubuntu,sans-serif;height:200px;width:400px;background:#eee;margin:150px auto;-webkit-border-radius:5px;-moz-border-radius:5px;-ms-border-radius:5px;-o-border-radius:5px;border-radius:5px}h1{font:60px/200px Ubuntu,sans-serif;text-align:center}

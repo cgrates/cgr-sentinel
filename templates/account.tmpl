@@ -1,0 +1,17 @@
+<div>
+  <h1>{{.Id}}</h1>
+  <h2>Balances</h2>
+  {{range $key, $bSlice := .BalanceMap}}
+  <dl>
+    <dt>{{$key}}<dt>
+      {{range $bal := $bSlice}}
+      <dd>{{$bal}}</dd>
+      {{end}}
+  </dl>
+  {{end}}
+  {{.}}
+  <h2>Triggers</h2>
+  {{range $trig := .ActionTriggers}}
+  {{$trig}}
+  {{end}}
+</div>
