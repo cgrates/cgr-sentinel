@@ -24,7 +24,7 @@ var (
 	client   *rpc.Client
 	sentinel = &Sentinel{}
 	tpl      *template.Template
-	t        = template.Must(template.New("account").ParseFiles("templates/account.tmpl"))
+	t        = template.Must(template.ParseFiles("templates/account.tmpl"))
 )
 
 func userBalanceHandler(w http.ResponseWriter, params martini.Params, r render.Render) {
@@ -74,7 +74,7 @@ func main() {
 	var err error
 	client, err = rpc.Dial("tcp", "localhost:2013")
 	if err != nil {
-		panic(err)
+		log.Fatal("Could not connect to CGRateS: ", err)
 	}
 	m := martini.Classic()
 	m.Use(render.Renderer(render.Options{
