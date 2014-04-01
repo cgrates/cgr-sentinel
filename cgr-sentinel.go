@@ -12,7 +12,7 @@ import (
 	"strings"
 
 	"github.com/cgrates/cgrates/engine"
-	"github.com/codegangsta/martini"
+	"github.com/go-martini/martini"
 	"github.com/gorilla/websocket"
 	"github.com/martini-contrib/render"
 )
