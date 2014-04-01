@@ -1,47 +1,12 @@
 @import "settings"
-//@import "foundation";
-
-// Or selectively include components
- @import
-//   "foundation/components/accordion",
-//   "foundation/components/alert-boxes",
-//   "foundation/components/block-grid",
-//   "foundation/components/breadcrumbs",
-//   "foundation/components/button-groups",
-   "foundation/components/buttons",
-//   "foundation/components/clearing",
-//   "foundation/components/dropdown",
-//   "foundation/components/dropdown-buttons",
-//   "foundation/components/flex-video",
-   "foundation/components/forms",
-   "foundation/components/grid",
-//   "foundation/components/inline-lists",
-//   "foundation/components/joyride",
-//   "foundation/components/keystrokes",
-//   "foundation/components/labels",
-//   "foundation/components/magellan",
-//   "foundation/components/orbit",
-//   "foundation/components/pagination",
-   "foundation/components/panels",
-//   "foundation/components/pricing-tables",
-//   "foundation/components/progress-bars",
-//   "foundation/components/reveal",
-//   "foundation/components/side-nav",
-//   "foundation/components/split-buttons",
-//   "foundation/components/sub-nav",
-//   "foundation/components/switch",
-   "foundation/components/tables",
-//   "foundation/components/tabs",
-//   "foundation/components/thumbs",
-//   "foundation/components/tooltips",
-//   "foundation/components/top-bar",
-   "foundation/components/type"
-//   "foundation/components/offcanvas",
-//   "foundation/components/visibility";
-
+@import "foundation"
 @import "compass/css3/border-radius"
 
-.container 
+$square_height: 300px
+$balances_bg: #AD7B6F
+$triggers_bg: #FF4D00
+
+#hero 
   font: 40px/200px Ubuntu, sans-serif
   height: 200px
   width: 400px
@@ -54,3 +19,22 @@ h1
   font: 60px/200px Ubuntu, sans-serif
   text-align: center
 
+#account-title
+  text-align: center
+  font: 2em Ubuntu,sans-serif
+  margin-bottom: 20px
+
+#balances, #triggers
+  color: white
+  height: $square_height
+  li
+    font: 1.2em Ubuntu, sans-serif
+  +border-radius()
+
+#balances
+  background: $balances_bg
+
+#triggers
+  background: $triggers_bg
+  .executed
+    color: black

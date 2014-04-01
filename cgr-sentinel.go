@@ -9,6 +9,7 @@ import (
 	"log"
 	"net/http"
 	"net/rpc"
+	"strings"
 
 	"github.com/cgrates/cgrates/engine"
 	"github.com/codegangsta/martini"
@@ -24,7 +25,18 @@ var (
 	client   *rpc.Client
 	sentinel = &Sentinel{}
 	tpl      *template.Template
-	t        = template.Must(template.ParseFiles("templates/account.tmpl"))
+	funcMap  = template.FuncMap{
+		"account": func(id string) template.HTML {
+			parts := strings.Split(id, ":")
+			return template.HTML(fmt.Sprintf("Direction: %s<br>Tenant: %s<br>Account: %s", strings.TrimLeft(parts[0], "*"), parts[1], parts[2]))
+		},
+		"balance": func(id string) template.HTML {
+			parts := strings.Split(id, "*")
+			return template.HTML(fmt.Sprintf("Direction: %s Type: %s", parts[2], parts[1]))
+		},
+		"trim": strings.TrimLeft,
+	}
+	t = template.Must(template.New("").Funcs(funcMap).ParseFiles("templates/account.tmpl"))
 )
 
 func userBalanceHandler(w http.ResponseWriter, params martini.Params, r render.Render) {
@@ -39,7 +51,9 @@ func userBalanceHandler(w http.ResponseWriter, params martini.Params, r render.R
 		http.Error(w, "Error getting user balance: "+err.Error(), http.StatusNotFound)
 	}
 	var accBlock bytes.Buffer
-	t.Execute(&accBlock, ub)
+	if err = t.ExecuteTemplate(&accBlock, "account.tmpl", ub); err != nil {
+		log.Print(err)
+	}
 	r.HTML(200, "user", template.HTML(accBlock.String()))
 }
 
@@ -62,12 +76,14 @@ func triggerHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "%s", err)
 	}
 	acc := &engine.Account{}
-	err = json.Unmarshal(hah, acc)
-	log.Print(err)
+	if err = json.Unmarshal(hah, acc); err != nil {
+		log.Print(err)
+	}
 	var accBlock bytes.Buffer
 	t.Execute(&accBlock, acc)
-	err = sentinel.ws.WriteMessage(websocket.TextMessage, accBlock.Bytes())
-	log.Print(err)
+	if err = sentinel.ws.WriteMessage(websocket.TextMessage, accBlock.Bytes()); err != nil {
+		log.Print(err)
+	}
 }
 
 func main() {

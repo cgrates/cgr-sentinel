@@ -1,16 +1,30 @@
-<div>
-  <h1>{{.Id}}</h1>
-  <h2>Balances</h2>
-  {{range $key, $bSlice := .BalanceMap}}
-  <dl>
-    <dt>{{$key}}<dt>
-      {{range $bal := $bSlice}}
-      <dd>{{$bal}}</dd>
+<div id="data">
+  <div id="account-title">
+    {{account .Id}}
+    {{if .Disabled}}(DISABLED){{end}}
+  </div>
+  <div class="row">
+    <div id="balances" class="large-6 columns">
+      <h2>Balances</h2>
+      <ul>
+        {{range $key, $bSlice := .BalanceMap}}
+        <li>
+          {{balance $key}}
+          {{range $bal := $bSlice}}
+          Value: {{$bal.Value}}
+        </li>
+        {{end}}
+      </dl>
       {{end}}
-  </dl>
-  {{end}}
-  <h2>Triggers</h2>
-  {{range $trig := .ActionTriggers}}
-  {{$trig}}
-  {{end}}
+      </ul>
+    </div>
+    <div id="triggers" class="large-6 columns">
+      <h2>Alarms</h2>
+      <ul>
+      {{range $trig := .ActionTriggers}}
+        <li class="{{if $trig.Executed}}executed{{end}}">Type: {{trim $trig.ThresholdType "*"}} Value: {{$trig.ThresholdValue}} {{if $trig.Executed}}(FIRED){{end}}</li>
+      {{end}}
+      </ul>
+    </div>
+  </div>
 </div>
