@@ -4,7 +4,7 @@ $(document).foundation();
 
 
 $(function() {
-    var ws = new WebSocket("ws://localhost:3000/monitor");
+    var ws = new WebSocket("ws://" + location.hostname + ":3000/monitor");
     ws.onmessage = function(event) {
         $("#data").html(event.data);
     };

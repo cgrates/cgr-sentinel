@@ -80,7 +80,7 @@ func triggerHandler(w http.ResponseWriter, r *http.Request) {
 		log.Print(err)
 	}
 	var accBlock bytes.Buffer
-	t.Execute(&accBlock, acc)
+	t.ExecuteTemplate(&accBlock, "account.tmpl", acc)
 	if err = sentinel.ws.WriteMessage(websocket.TextMessage, accBlock.Bytes()); err != nil {
 		log.Print(err)
 	}
